@@ -1,42 +1,60 @@
-// App/Fitur/Restorasi/pages/index.tsx
-
-'use client';
-
-import { useState } from 'react';
+/*
+App/Fitur/Restorasi/pages/index.tsx
+*/
 import ImageUpload from '../components/ImageUpload';
 import ComparisonSlider from '../components/ComparisonSlider';
 import RestoreButton from '../components/RestoreButton';
+import { useState } from 'react';
 
 export default function RestorasiPage() {
-  const [originalImage, setOriginalImage] = useState<File | null>(null);
+  const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [restoredImage, setRestoredImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [damageLevel, setDamageLevel] = useState<'ringan' | 'sedang' | 'berat' | null>(null);
-
-  const handleImageUpload = (file: File) => {
-    setOriginalImage(file);
-    setRestoredImage(null);
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Restorasi Foto Rusak DSRT</h1>
-      <ImageUpload onUpload={handleImageUpload} />
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Restorasi Foto DSRT</h1>
+      <ImageUpload onImageUpload={setOriginalImage} />
       {originalImage && (
         <RestoreButton
-          originalImage={originalImage}
-          setRestoredImage={setRestoredImage}
-          setLoading={setLoading}
-          setDamageLevel={setDamageLevel}
+          image={originalImage}
+          onRestore={(img) => setRestoredImage(img)}
+          setIsLoading={setIsLoading}
         />
       )}
-      {loading && <p className="text-center mt-4">Memproses gambar...</p>}
+      {isLoading && <p className="text-center mt-4">Memproses...</p>}
       {restoredImage && originalImage && (
-        <>
-          <h2 className="text-xl mt-6 font-semibold text-center">Perbandingan Hasil</h2>
-          <ComparisonSlider originalFile={originalImage} restoredUrl={restoredImage} />
-          <p className="text-center mt-2 text-sm text-gray-600">Kerusakan: {damageLevel}</p>
-        </>
+        <ComparisonSlider original={originalImage} restored={restoredImage} />
+      )}
+    </div>
+  );
+}
+App/Fitur/Restorasi/pages/index.tsx
+*/
+import ImageUpload from '../components/ImageUpload';
+import ComparisonSlider from '../components/ComparisonSlider';
+import RestoreButton from '../components/RestoreButton';
+import { useState } from 'react';
+
+export default function RestorasiPage() {
+  const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const [restoredImage, setRestoredImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Restorasi Foto DSRT</h1>
+      <ImageUpload onImageUpload={setOriginalImage} />
+      {originalImage && (
+        <RestoreButton
+          image={originalImage}
+          onRestore={(img) => setRestoredImage(img)}
+          setIsLoading={setIsLoading}
+        />
+      )}
+      {isLoading && <p className="text-center mt-4">Memproses...</p>}
+      {restoredImage && originalImage && (
+        <ComparisonSlider original={originalImage} restored={restoredImage} />
       )}
     </div>
   );
