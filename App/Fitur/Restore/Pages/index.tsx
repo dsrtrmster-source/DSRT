@@ -1,46 +1,43 @@
-import { useState } from 'react'; import Image from 'next/image'; import { restoreImage } from '../lib/replicate'; import { analyzeImage } from '../utils/analyzeImage'; import ImageCompare from '../components/ImageCompare';
+// App/Fitur/Restorasi/pages/index.tsx
 
-export default function RestorePage() { const [originalImage, setOriginalImage] = useState(null); const [restoredImage, setRestoredImage] = useState(null); const [uploading, setUploading] = useState(false); const [status, setStatus] = useState('');
+'use client';
 
-const handleImageUpload = async (e) => { const file = e.target.files[0]; if (!file) return; setUploading(true); setStatus('Menganalisis kerusakan gambar...');
+import { useState } from 'react';
+import ImageUpload from '../components/ImageUpload';
+import ComparisonSlider from '../components/ComparisonSlider';
+import RestoreButton from '../components/RestoreButton';
 
-const base64 = await toBase64(file);
-setOriginalImage(base64);
+export default function RestorasiPage() {
+  const [originalImage, setOriginalImage] = useState<File | null>(null);
+  const [restoredImage, setRestoredImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [damageLevel, setDamageLevel] = useState<'ringan' | 'sedang' | 'berat' | null>(null);
 
-const damageLevel = await analyzeImage(base64);
-setStatus(`Tingkat kerusakan: ${damageLevel}`);
+  const handleImageUpload = (file: File) => {
+    setOriginalImage(file);
+    setRestoredImage(null);
+  };
 
-setStatus('Memproses restorasi gambar...');
-const result = await restoreImage(base64);
-setRestoredImage(result);
-
-setUploading(false);
-setStatus('Selesai.');
-
-};
-
-return ( <div className="p-6 max-w-4xl mx-auto"> <h1 className="text-2xl font-bold mb-4">Fitur Restorasi DSRT</h1>
-
-<input
-    type="file"
-    accept="image/*"
-    onChange={handleImageUpload}
-    className="mb-4"
-    disabled={uploading}
-  />
-
-  {status && <p className="text-sm text-gray-600 mb-2">{status}</p>}
-
-  {originalImage && restoredImage && (
-    <ImageCompare
-      original={originalImage}
-      restored={restoredImage}
-    />
-  )}
-</div>
-
-); }
-
-function toBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = (error) => reject(error); }); }
-
-
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">Restorasi Foto Rusak DSRT</h1>
+      <ImageUpload onUpload={handleImageUpload} />
+      {originalImage && (
+        <RestoreButton
+          originalImage={originalImage}
+          setRestoredImage={setRestoredImage}
+          setLoading={setLoading}
+          setDamageLevel={setDamageLevel}
+        />
+      )}
+      {loading && <p className="text-center mt-4">Memproses gambar...</p>}
+      {restoredImage && originalImage && (
+        <>
+          <h2 className="text-xl mt-6 font-semibold text-center">Perbandingan Hasil</h2>
+          <ComparisonSlider originalFile={originalImage} restoredUrl={restoredImage} />
+          <p className="text-center mt-2 text-sm text-gray-600">Kerusakan: {damageLevel}</p>
+        </>
+      )}
+    </div>
+  );
+}
