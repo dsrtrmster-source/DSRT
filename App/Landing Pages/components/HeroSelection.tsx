@@ -1,20 +1,21 @@
+// App/landing/components/HeroSection.tsx
+
 "use client";
 
 export default function HeroSection() {
   return (
-    <section className="flex flex-col items-center justify-center text-center px-6 py-24 text-white bg-black bg-opacity-40 backdrop-blur-sm min-h-[70vh]">
-      <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
+    <section className="flex flex-col items-center justify-center text-center text-white px-6 py-32 bg-black/40 backdrop-blur-sm">
+      <h2 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
         Digital Smart Revise Technology
-      </h1>
-      <p className="text-lg md:text-xl max-w-2xl mb-8">
-        Platform restorasi foto cerdas yang mempertahankan keaslian wajah,
-        pose, warna, dan detail penting dengan teknologi konservatif berbasis AI.
+      </h2>
+      <p className="text-lg md:text-xl max-w-2xl mb-8 drop-shadow-md">
+        Platform restorasi AI konservatif untuk memulihkan foto bersejarah dan rusak tanpa kehilangan keaslian.
       </p>
       <a
         href="/fitur/restorasi"
-        className="bg-white text-black px-6 py-3 rounded-md text-lg font-semibold hover:bg-gray-200 transition"
+        className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
       >
-        Coba Restorasi Sekarang
+        Mulai Restorasi
       </a>
     </section>
   );
