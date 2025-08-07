@@ -1,32 +1,26 @@
 
-// App/Fitur/Restorasi/components/ImageUpload.tsx
-
-'use client';
-
+/*
+App/Fitur/Restorasi/components/ImageUpload.tsx
+*/
 import { ChangeEvent } from 'react';
 
-interface Props {
-  onUpload: (file: File) => void;
-}
-
-export default function ImageUpload({ onUpload }: Props) {
+export default function ImageUpload({ onImageUpload }: { onImageUpload: (base64: string) => void }) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      onUpload(file);
-    } else {
-      alert('Mohon unggah file gambar (.jpg, .png, dll)');
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result && typeof reader.result === 'string') {
+        onImageUpload(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
-    <div className="flex justify-center mb-4">
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleChange}
-        className="border p-2 rounded shadow"
-      />
+    <div className="mb-4">
+      <input type="file" accept="image/*" onChange={handleChange} />
     </div>
   );
 }
